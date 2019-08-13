@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--============================== Sales Format report tree view ====================================-->
+    <record id="view_sales_format_report_tree" model="ir.ui.view">
+        <field name="name">Order Sales Format Report</field>
+        <field name="model">sales.format.report</field>
+        <field name="arch" type="xml">
+            <tree string="Sales Report" create='false' edit='false' >
+                <field name="order_no"/>
+                <field name="order_date"/>
+                <field name="party_name" domain = "[('customer','=', True)]"/>
+                <field name="wo_no"/>
+                <field name="product_id"/>
+                <field name="user_id"/>
+                <field name="order_qty"/>
+                <field name="pending_qty"/>
+                <field name="rate"/>
+                <field name="discount"/>
+                <field name="discount_amt"/>
+                <field name="discount_order_amt"/>
+                <field name="pending_amt"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    
+    <!--============================== Sales report search view ====================================-->
+    <record id="view_sales_format_report_search" model="ir.ui.view">
+        <field name="name">sales format report</field>
+        <field name="model">sales.format.report</field>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+            <search string="Sales Report">
+                <field name="product_id" readonly="1"/>
+                <field name="party_name" readonly="1"/>
+                <field name="user_id" readonly="1"/>
+                <field name="order_no" readonly="1"/>
+                <field name="state" readonly="1"/>
+                <filter string="Partner" name="partner_id" context="{'group_by':['party_name']}"/>
+                <filter string="Product"  name="pro_id" context="{'group_by':['product_id']}"/>
+                <filter string="User"  name="user" context="{'group_by':['user_id']}"/>
+                <filter string="Order"  name="order" context="{'group_by':['order_no']}"/>
+                <filter string="State"  name="state_id" context="{'group_by':['state']}"/>
+           </search>
+        </field>
+    </record>
+        
+</odoo>

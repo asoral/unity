@@ -1,0 +1,191 @@
+<odoo>
+
+    <template id="sales_report_pdf_format_template_id">
+        <t t-call="report.html_container">
+            <t t-set="partner" t-value="[]"/>
+            <t t-foreach="docs" t-as="o">
+                <t t-set="data_report_margin_top" t-value="13"/>
+                <t t-set="data_report_header_spacing" t-value="11"/>
+                <t t-set="data_report_dpi" t-value="110"/>
+                <div class="header">
+                        <table style="width:1000px">
+                            <tr style="border-bottom: 1px solid;">
+                                <td>
+                                    <h4>
+                                        <center>
+                                            <b>
+                                                <span t-esc="o.company_id.name"/>
+                                            </b>
+                                        </center>
+                                    </h4>
+                                    <h5>
+                                        <center>
+                                            <b> <span t-esc="o.wizard_date()"/> Wise <span t-esc="o.wizard_date()"/> Pending Sales Report Details From : <span t-field="o.date_from" t-field-options='{"format": "dd-MM-yyyy"}'/>
+                                                To : <span t-field="o.date_to"
+                                                  t-field-options="{&quot;format&quot;: &quot;dd-MM-yyyy&quot;}"/>
+                                            </b>
+                                        </center>
+                                    </h5>
+                                </td>
+                                <td align="right">
+                                    <small>
+                                        <span class="page"/><![CDATA[&nbsp;]]>/<![CDATA[&nbsp;]]>
+                                        <span class=" topage"/>
+                                        <br/>
+                                        <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/>
+                                    </small>
+                                </td>
+                            </tr>
+                            </table>
+                            
+                            
+                        
+                        <table style="width:1000px">
+                            <tr style="border: 1px solid white; position:relative;">
+                                <td align="left" ><b>SO <br/> NO</b></td>
+                                <td align="left" style="position:absolute;left:12mm;"><b>SO <br/> DATE</b></td>
+                                <td align="left" style="position:absolute;left:30mm;"><b>PARTY <br/> NAME</b></td>
+                                <td align="left" style="position:absolute;left:50mm;"><b>WO <br/> NO</b></td>
+                                <td align="left" style="position:absolute;right:178mm;"><b>PRODUCT <br/> NAME </b></td>
+                                <td align="left" style="position:absolute;right:158mm;"><b>ORDER <br/> QTY </b></td>
+                                <td align="left" style="position:absolute;right:132mm;"><b>PENDING <br/> QTY</b></td>
+                                <td align="left" style="position:absolute;right:120mm;"><b> Rate</b></td>
+                                <td align="left" style="position:absolute;right:92mm;"><b>DISCOUNT</b></td>
+                                <td align="left" style="position:absolute;right:63mm;"><b>DISCOUNT <br/>AMOUNT</b></td>
+                                <td align="left" style="position:absolute;right:28mm;"><b> DISCOUNTED <br/> ORDER AMOUNT</b></td>
+                                <td align="left" style="position:absolute;right:1mm;"><b>PENDING <br/> AMOUNT</b></td>
+                                
+                            </tr>
+                         </table>
+                        <div class="row" style="font-size:15px; border-bottom: 1px solid;">
+                            <div class="col-xs-12">
+                            </div>
+                        </div>
+                    </div>
+
+                <div class="page">
+                    <div class="row" style="font-size:15px">
+                        <div class="col-xs-12">
+                            <table class="table table-condensed" style="width:1000px;padding:0px;bordercolor:000000">
+                                
+                                <tr t-foreach="o.get_all_data()" t-as="l">
+                                    <td style="font-size:13px;width:50px;word-wrap: break-word;" align="left">
+                                        <span t-field="l.order_no" />
+                                    </td>
+                                    <td style="font-size:13px;width:50px;word-wrap: break-word;" align="left">
+                                        <span t-esc="l.order_date" t-field-options='{"format": "dd-MM-yyyy"}'/>
+                                    </td>
+                                    <td style="font-size:13px;width:50px;word-wrap: break-word;" align="left">
+                                        <span t-esc="l.party_name.name"/>
+                                    </td>
+                                    
+                                    <!-- <td style="font-size:13px;width:100px;word-wrap: break-word;" align="left">
+                                        <span t-esc="l.product_id.name"/>
+                                        
+                                    </td> -->
+                                    <!-- <td style="font-size:13px;" align="right">
+                                        <span t-field="l.user_id.name"/>
+                                    </td> -->
+                                    <!-- <td style="font-size:13px;background-color:white;"
+                                        align="right">
+                                        <span t-field="l.order_qty"/>
+                                        <t t-set="order_qty_total" t-value="order_qty_total+l.order_qty" />
+                                    </td> -->
+                                     <!-- <td style="font-size:13px;background-color:white;"
+                                        align="right">
+                                        <span t-field="l.pending_qty"/>
+                                        <t t-set="pend_qty_total" t-value="pend_qty_total+l.pending_qty" />
+                                    </td>
+                                     <td style="font-size:13px;background-color:white;"
+                                        align="right">
+                                        <span t-field="l.rate"/>
+                                    </td>
+                                    <td style="font-size:13px;background-color:white;"
+                                        align="right">
+                                        <span t-field="l.discount"/>
+                                    </td> -->
+                                    
+                                        <t t-if="l.order_no">
+                                        <t t-set="order_qty_total" t-value="0"/>
+                                        <t t-set="pend_qty_total" t-value="0"/>
+                                        <t t-set="dis_amt_total" t-value="0"/>
+                                        <t t-set="dis_order_amt_total" t-value="0"/>
+                                        <t t-set="pend_amt_total" t-value="0"/>
+                                        
+                                            <tr t-foreach="l.order_no.order_line" t-as="line">
+                                                
+                                                <td></td><td></td><td></td>
+                                                <td style="font-size:13px;width:50px;word-wrap: break-word;">
+                                                    <span t-esc="line.work_order_no"/>
+                                                </td>
+                                                <td style="font-size:13px;width:100px;word-wrap: break-word;">
+                                                    <span t-esc="line.product_id.name"/>
+                                                </td>
+                                                <td style="font-size:13px;background-color:white;" align="right">
+                                                    <span t-esc="line.product_uom_qty"/>
+                                                    <t t-set="order_qty_total" t-value="order_qty_total+ (line.product_uom_qty)" />
+                                                </td>
+                                                <td style="font-size:13px;background-color:white;" align="right">
+                                                    <span t-esc="line.product_uom_qty - line.qty_delivered" />
+                                                    <t t-set="pend_qty_total" t-value="pend_qty_total+ (line.product_uom_qty - line.qty_delivered)" />                                                
+                                                </td>
+                                                <td style="font-size:13px;background-color:white;" align="right">
+                                                    <span t-esc="line.price_unit"/>
+                                                </td>
+                                                <td style="font-size:13px;background-color:white;" align="right">
+                                                    <span t-esc="line.discount"/>
+                                                </td>
+                                               <td style="font-size:13px;background-color:white;"
+                                                    align="right">
+                                                    <span t-field="l.discount_amt"/>
+                                                    <t t-set="dis_amt_total" t-value="dis_amt_total+l.discount_amt" />
+                                                </td>
+                                                <td style="font-size:13px;background-color:white;"
+                                                    align="right">
+                                                    <span t-field="l.discount_order_amt"/>
+                                                    <t t-set="dis_order_amt_total" t-value="dis_order_amt_total+l.discount_order_amt" />
+                                                </td>
+                                                <td style="font-size:13px;background-color:white;"
+                                                    align="right">
+                                                    <span t-field="l.pending_amt"/>
+                                                    <t t-set="pend_amt_total" t-value="pend_amt_total+l.pending_amt" />
+                                                </td>
+                                            </tr>
+                                                  
+                                        
+                                            <tr style="background-color:white;">
+                                                <td style="border: 0px solid white;font-size:13px;" colspan="5" align="right">
+                                                    <b>Total : </b>
+                                                </td>
+                                                <td style="border: 0px solid white;font-size:13px;" align="right">
+
+                                                    <b><span t-esc="'{:,}'.format(order_qty_total)"/></b>
+                                                    <!--<strong t-esc="deb_total"/>-->
+                                                </td>
+                                                <td style="border: 0px solid white;font-size:13px;" align="right">
+                                                   <b><span t-esc="'{:,}'.format(pend_qty_total)"/></b>
+                                                    <!--<strong t-esc="cre_total"/>-->
+                                                </td>
+                                                <td></td>
+                                                <td></td>
+                                                <td style="border: 0px solid white;font-size:13px;" align="right">
+                                                   <b><span t-esc="'{:,}'.format(dis_amt_total)"/></b>
+                                                </td>
+                                                 <td style="border: 0px solid white;font-size:13px;" align="right">
+                                                   <b><span t-esc="'{:,}'.format(dis_order_amt_total)"/></b>
+                                                </td>
+                                                 <td style="border: 0px solid white;font-size:13px;" align="right">
+                                                   <b><span t-esc="'{:,}'.format(pend_amt_total)"/></b>
+                                                </td>
+                                            </tr>
+                                        </t>    
+                                </tr>
+                                
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                </t>
+             </t>
+    </template>
+</odoo>

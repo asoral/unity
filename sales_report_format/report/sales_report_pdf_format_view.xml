@@ -1,0 +1,10 @@
+<odoo>
+
+    <report id="sales_report_pdf_format"
+        model="wizard.sales.format.report"
+        string="Sales Report" report_type="qweb-pdf"
+        name="sales_report_format.sales_report_pdf_format_template_id"
+        file="sales_report_format.sales_report_pdf_format_template_id"
+        attachment_use="False" />
+
+</odoo>
