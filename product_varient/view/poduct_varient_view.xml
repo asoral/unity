@@ -1,0 +1,31 @@
+<odoo>
+
+    <record id="view_sale_order_form_inherited" model="ir.ui.view">
+        <field name="name">sale.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="before">
+                <field name="prod_temp_id"/>
+                <field name="attribute_id" invisible="1"/>
+                <field name="value_ids" domain="[('attribute_id', '=', attribute_id)]" context="{'default_prod_temp_id': prod_temp_id,'default_attribute_id':attribute_id}"/>
+            </xpath>
+            
+            <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+                
+        </field>
+    </record>
+    
+    <record id="view_product_attribute_value_tree_inherited" model="ir.ui.view">
+        <field name="name">product.attribute.value.tree</field>
+        <field name="model">product.attribute.value</field>
+        <field name="inherit_id" ref="product.product_attribute_value_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="attribute_id" position="after">
+                <field name="prod_temp_id" invisible="1"/>
+            </field>
+        </field>
+    </record>
+</odoo>
