@@ -14,12 +14,12 @@
                         <field name="partner_ids" widget="many2many_tags" domain = "[('customer','=', True)]"/>
                     </group>
                     <group>
+                        <field name="product_ids" widget="many2many_tags"/>
                         <field name="sales_person_ids" widget="many2many_tags"/>
                         <field name="state" />
                         <field name="area_wise" widget="radio"/>
                         <field name="state_id" attrs="{'invisible':[('area_wise', '!=', 'state')]}"/>                        
                     </group>
-                    <field name="product_ids"/>
                 </group>
                 <footer>
                     <button name="button_export_pdf_report" string="PDF Report" type="object" class="oe_highlight"/>

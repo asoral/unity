@@ -18,7 +18,7 @@ class WizardSalesFormatReport(models.TransientModel):
     partner_ids = fields.Many2many('res.partner',string="Customer")
     sales_person_ids = fields.Many2many('res.users',string='Sales Person')
     product_ids = fields.Many2many('product.product',string='product')
-    area_wise = fields.Selection([('city','City'),
+    area_wise = fields.Selection([
                                   ('state','State')
                                 ],string="Area")
 #     city_id = fields.Many2one('',string="City")
