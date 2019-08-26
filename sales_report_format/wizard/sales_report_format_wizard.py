@@ -171,6 +171,8 @@ class WizardSalesFormatReport(models.TransientModel):
         
         
     def get_query(self):
+        from_date = fields.Date.from_string(self.date_from)
+        to_date = fields.Date.from_string(self.date_to)
         query="""
            select so.id as order,
             so.date_order as date,
@@ -194,8 +196,11 @@ class WizardSalesFormatReport(models.TransientModel):
             inner join sale_order as so on sol.order_id = so.id
             inner join product_product as pp on sol.product_id = pp.id
             inner join product_template as pt on pp.product_tmpl_id = pt.id
-            
+            where
+                so.confirmation_date BETWEEN '{}'""".format(from_date)+""" AND '{}'""".format(to_date)+"""
+
         """
+        
         
                 
         if self.partner_ids:
