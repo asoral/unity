@@ -1,7 +1,7 @@
 
 {
     'name': 'Sales Report Format',
-    'version': '10.0.0.5',
+    'version': '10.0.0.6',
     'sequence':1,
     'category': '',
     'description': """

@@ -197,7 +197,8 @@ class WizardSalesFormatReport(models.TransientModel):
             inner join product_product as pp on sol.product_id = pp.id
             inner join product_template as pt on pp.product_tmpl_id = pt.id
             where
-                so.confirmation_date BETWEEN '{}'""".format(from_date)+""" AND '{}'""".format(to_date)+"""
+                so.date_order BETWEEN  '{}'""".format(from_date)+""" and '{}'""".format(to_date)+"""
+                
 
         """
         
