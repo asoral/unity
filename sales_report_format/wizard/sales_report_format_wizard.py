@@ -117,6 +117,22 @@ class WizardSalesFormatReport(models.TransientModel):
                             'search_default_user': True,
                                 }
                 }
+            
+        elif self.state_id:
+            
+            return {
+                'name': 'Sales Format Report',
+                'view_type': 'form',
+                'view_mode': 'tree',
+                'res_model': 'sales.format.report',
+                'type': 'ir.actions.act_window',
+                'nodestory': True,
+                'target': 'current',
+                'context':{
+                            'search_default_state_ids': True,
+                                }
+                }
+            
         elif self.state == 'draft' or self.state == 'sent' or self.state == 'proforma_inv' or self.state == 'fst_approval' or self.state == 'snd_approval' or self.state == 'pro'  or self.state == 'blanket_order' or self.state == 'sale' or self.state == 'done' or self.state == 'cancel' or self.state == 'revised' :
             
             return {
@@ -128,7 +144,7 @@ class WizardSalesFormatReport(models.TransientModel):
                 'nodestory': True,
                 'target': 'current',
                 'context':{
-                            'search_default_state_id': True,
+                            'search_default_status': True,
                                 }
             }
         else:
@@ -163,7 +179,8 @@ class WizardSalesFormatReport(models.TransientModel):
             "discount_amt": record.get('discountamt'),
             "discount_order_amt": record.get('disorderamt'),
             "pending_amt": record.get('pendingamt'),
-            "state":record.get('state')
+            "state":record.get('state'),
+            "state_id":record.get('state_id')
             
         }
         return  vals
@@ -177,6 +194,7 @@ class WizardSalesFormatReport(models.TransientModel):
            select so.id as order,
             so.date_order as date,
             so.state as state,
+            so.state_id as state_id,
             so.partner_id as customer,
             so.user_id as user,
             sol.work_order_no as workorder,
@@ -194,6 +212,7 @@ class WizardSalesFormatReport(models.TransientModel):
             
             from sale_order_line as sol
             inner join sale_order as so on sol.order_id = so.id
+            inner join res_country_state as rcs on so.state_id = rcs.id
             inner join product_product as pp on sol.product_id = pp.id
             inner join product_template as pt on pp.product_tmpl_id = pt.id
             where
@@ -224,7 +243,15 @@ class WizardSalesFormatReport(models.TransientModel):
                 query += " and so.user_id = {} ".format((sales_person_ids[0]))
             else:
                 query +=" and so.user_id in {} ".format(tuple(sales_person_ids))
-            
+
+        if self.state_id:
+            state_ids = [t for t in self.state_id.ids]
+            if len(state_ids)==1:
+                query += " and so.state_id = {} ".format((state_ids[0]))
+            else:
+                query +=" and so.state_id in {} ".format(tuple(state_ids))
+        
+        
         if self.state == 'draft':
             query += "and so.state ='draft'"
         
@@ -260,6 +287,7 @@ class WizardSalesFormatReport(models.TransientModel):
         
         query +=""" group by pp.id,
                     so.id,
+                    so.state_id,
                     so.state,
                     so.user_id,
                     so.partner_id,

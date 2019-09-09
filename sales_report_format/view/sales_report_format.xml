@@ -20,6 +20,7 @@
                 <field name="discount_amt"/>
                 <field name="discount_order_amt"/>
                 <field name="pending_amt"/>
+                <field name="state_id"/>
                 <field name="state"/>
             </tree>
         </field>
@@ -36,12 +37,14 @@
                 <field name="party_name" readonly="1"/>
                 <field name="user_id" readonly="1"/>
                 <field name="order_no" readonly="1"/>
+                <field name="state_id" readonly="1"/>
                 <field name="state" readonly="1"/>
                 <filter string="Partner" name="partner_id" context="{'group_by':['party_name']}"/>
                 <filter string="Product"  name="pro_id" context="{'group_by':['product_id']}"/>
                 <filter string="User"  name="user" context="{'group_by':['user_id']}"/>
                 <filter string="Order"  name="order" context="{'group_by':['order_no']}"/>
-                <filter string="State"  name="state_id" context="{'group_by':['state']}"/>
+                <filter string="State id"  name="state_ids" context="{'group_by':['state_id']}"/>
+                <filter string="State"  name="status" context="{'group_by':['state']}"/>
            </search>
         </field>
     </record>
