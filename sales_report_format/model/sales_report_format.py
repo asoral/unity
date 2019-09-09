@@ -19,6 +19,7 @@ class SalesFormatReport(models.Model):
     user_id = fields.Many2one('res.users', string='User', default=lambda self:self.env.user.id)
     company_id = fields.Many2one('res.company', related ="user_id.company_id", string="Company")
     state_id = fields.Many2one('res.country.state',string="State")
+    product_category_id = fields.Many2one('product.category',string='Product Category')
     state = fields.Selection([
         ('draft', 'Quotation'),
         ('sent', 'Quotation Sent'),

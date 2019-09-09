@@ -20,8 +20,16 @@
                         <field name="area_wise" widget="radio"/>
                         <field name="state_id" attrs="{'invisible':[('area_wise', '!=', 'state')]}"/>                        
                     </group>
-                    <field name="product_ids" string="Product"/>
                 </group>
+            <notebook>
+                <page string="Product">
+                    <field name="product_ids"/>
+                </page>
+                <page string="Product Category">
+                    <field name="product_category_ids"/>
+                </page>
+            </notebook>
+                
                 <footer>
                     <button name="button_export_pdf_report" string="PDF Report" type="object" class="oe_highlight"/>
                     <button name="confirm_wizard_sales_format" string="Confirm" type="object" class="btn-primary"/>

@@ -18,6 +18,7 @@ class WizardSalesFormatReport(models.TransientModel):
     partner_ids = fields.Many2many('res.partner',string="Customer")
     sales_person_ids = fields.Many2many('res.users',string='Sales Person')
     product_ids = fields.Many2many('product.product',string='product')
+    product_category_ids = fields.Many2many('product.category',string='Product Category')
     area_wise = fields.Selection([
                                   ('state','State')
                                 ],string="Area")
@@ -118,6 +119,21 @@ class WizardSalesFormatReport(models.TransientModel):
                                 }
                 }
             
+        elif self.product_category_ids:
+            
+            return {
+                'name': 'Sales Format Report',
+                'view_type': 'form',
+                'view_mode': 'tree',
+                'res_model': 'sales.format.report',
+                'type': 'ir.actions.act_window',
+                'nodestory': True,
+                'target': 'current',
+                'context':{
+                            'search_default_categ_id': True,
+                                }
+                }
+            
         elif self.state_id:
             
             return {
@@ -171,6 +187,7 @@ class WizardSalesFormatReport(models.TransientModel):
             "party_name":record.get('customer'),
             "wo_no": record.get('workorder'),
             "product_id":record.get('product'),
+            "product_category_id":record.get('category'),
             "user_id":record.get('user'),
             "order_qty": record.get('totalqty'),
             "pending_qty":record.get('pendingqty'),
@@ -197,6 +214,7 @@ class WizardSalesFormatReport(models.TransientModel):
             so.state_id as state_id,
             so.partner_id as customer,
             so.user_id as user,
+            pt.categ_id as category,
             sol.work_order_no as workorder,
             pp.id as product,
             sum(sol.product_uom_qty) as totalqty,
@@ -251,6 +269,13 @@ class WizardSalesFormatReport(models.TransientModel):
             else:
                 query +=" and so.state_id in {} ".format(tuple(state_ids))
         
+        if self.product_category_ids:
+            product_category_ids = [t for t in self.product_category_ids.ids]
+            if len(product_category_ids)==1:
+                query += " and pt.categ_id = {} ".format((product_category_ids[0]))
+            else:
+                query +=" and pt.categ_id in {} ".format(tuple(product_category_ids))
+        
         
         if self.state == 'draft':
             query += "and so.state ='draft'"
@@ -287,6 +312,7 @@ class WizardSalesFormatReport(models.TransientModel):
         
         query +=""" group by pp.id,
                     so.id,
+                    pt.categ_id,
                     so.state_id,
                     so.state,
                     so.user_id,
