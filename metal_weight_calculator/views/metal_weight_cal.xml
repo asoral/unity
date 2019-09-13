@@ -1,0 +1,89 @@
+<odoo>
+    <record id="view_template_property_form111" model="ir.ui.view">
+        <field name="name">product.template.stock.property.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="stock.view_template_property_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page/group/group[@name='stock_property']" position="after">
+                <group>
+                    <field name="is_eng_product"/>
+                    <field name="material" attrs="{'required':[('is_eng_product','=',True)]}"/>
+                    <field name="shape" attrs="{'invisible':[('material', 'in', [False])],'required':[('material', 'in', [True])]}"/>
+                    <!--<label for="length" string="Length" attrs="{'invisible':[('shape', 'in', ['coil',False])],'required':[('is_eng_product','=',True)]}"/>-->
+                    <!--<div>-->
+                        <!--<field name="length" attrs="{'invisible':[('shape', 'in', ['coil',False])]}"  class="oe_inline"/>-->
+                        <!--<label string="m" attrs="{'invisible':[('shape', 'in', ['coil',False])]}"  class="oe_inline"/>-->
+                    <!--</div>-->
+                    <label for="width" string="Width" attrs="{'invisible':[('shape', 'not in', ['sheet_plate','coil','round/pipe','square'])]}"/>
+                        <div>
+                            <field name="width"  attrs="{'invisible':[('shape', 'not in', ['sheet_plate','coil','round/pipe','square'])],'required':[('shape', 'in', ['sheet_plate','coil','round/pipe','square'])]}"  class="oe_inline"/>
+                            <label string="mm" attrs="{'invisible':[('shape', 'not in', ['sheet_plate','coil','round/pipe','square'])]}"  class="oe_inline"/>
+                        </div>
+                    <label for="diameter" string="Diameter" attrs="{'invisible':[('shape', 'not in', ['round'])]}"/>
+                     <div>
+                        <field name="diameter"  attrs="{'invisible':[('shape', 'not in', ['round'])],'required':[('shape', 'in', ['round'])]}"  class="oe_inline"/>
+                        <label string="mm" attrs="{'invisible':[('shape', 'not in', ['round'])]}"  class="oe_inline"/>
+                     </div>
+                    <label for="thickness" string="Thickness" attrs="{'invisible':[('shape', 'not in', ['sheet_plate','coil'])]}"/>
+                      <div>
+                         <field name="thickness"  attrs="{'invisible':[('shape', 'not in', ['sheet_plate','coil'])],'required':[('shape', 'in', ['sheet_plate','coil'])]}"  class="oe_inline"/>
+                         <label  string="mm" attrs="{'invisible':[('shape', 'not in', ['sheet_plate','coil'])]}"  class="oe_inline"/>
+                      </div>
+                    <label for="across_flats" string="Across_flats" attrs="{'invisible':[('shape', 'not in', ['oct_bar','hex_bar','square_bar'])]}"/>
+                      <div>  
+                        <field name="across_flats"  attrs="{'invisible':[('shape', 'not in', ['oct_bar','hex_bar','square_bar'])],'required':[('shape', 'in', ['oct_bar','hex_bar','square_bar'])]}" class="oe_inline"/>
+                        <label string="mm" attrs="{'invisible':[('shape', 'not in', ['oct_bar','hex_bar','square_bar'])]}" class="oe_inline"/>
+                      </div>
+                    
+                    <label for="leg1" string="Leg1" attrs="{'invisible':[('shape', 'not in', ['angle_bar'])]}"/>
+                     <div>
+                        <field name="leg1"  attrs="{'invisible':[('shape', 'not in', ['angle_bar'])],'required':[('shape', 'in', ['angle_bar'])]}" class="oe_inline"/>
+                        <label  string="mm" attrs="{'invisible':[('shape', 'not in', ['angle_bar'])]}" class="oe_inline"/>
+                     </div>
+                    
+                    <label for="leg2" string="Leg2" attrs="{'invisible':[('shape', 'not in', ['angle_bar'])]}"/>
+                      <div>
+                        <field name="leg2"  attrs="{'invisible':[('shape', 'not in', ['angle_bar'])],'required':[('shape', 'in', ['angle_bar'])]}" class="oe_inline"/>
+                        <label  string="mm" attrs="{'invisible':[('shape', 'not in', ['angle_bar'])]}" class="oe_inline"/>
+                      </div>
+                    
+                    <label for="outer_diameter" string="Outer_diameter" attrs="{'invisible':[('shape', 'not in', ['round/pipe','hollow_bar'])]}"/>
+                        <div>
+                            <field name="outer_diameter"  attrs="{'invisible':[('shape', 'not in', ['round/pipe','hollow_bar'])],'required':[('shape', 'in', ['round/pipe','hollow_bar'])]}" class="oe_inline"/>
+                            <label  string="mm" attrs="{'invisible':[('shape', 'not in', ['round/pipe','hollow_bar'])]}" class="oe_inline"/>
+                        </div>
+                    <label for="inner_diameter" string="Inner_diameter" attrs="{'invisible':[('shape', 'not in', ['hollow_bar'])]}"/>
+                    <div>
+                        <field name="inner_diameter"  attrs="{'invisible':[('shape', 'not in', ['hollow_bar'])],'required':[('shape', 'in', ['hollow_bar'])]}" class="oe_inline"/>
+                        <label  string="mm" attrs="{'invisible':[('shape', 'not in', ['hollow_bar'])]}" class="oe_inline"/>
+                    </div>
+                    <label for="side1" string="side1" attrs="{'invisible':[('shape', 'not in', ['square'])]}"/>
+                      <div>
+                        <field name="side1"  attrs="{'invisible':[('shape', 'not in', ['square'])],'required':[('shape', 'in', ['square'])]}" class="oe_inline"/>
+                        <label  string="mm" attrs="{'invisible':[('shape', 'not in', ['square'])]}" class="oe_inline"/>
+                      </div>
+                    <label for="side2" string="side2"  attrs="{'invisible':[('shape', 'not in', ['square'])]}"/>
+                        <div>
+                            <field name="side2"  attrs="{'invisible':[('shape', 'not in', ['square'])],'required':[('shape', 'in', ['square'])]}" class="oe_inline"/>
+                            <label for="mm"  attrs="{'invisible':[('shape', 'not in', ['square'])]}" class="oe_inline"/>
+                        </div>
+                </group> 
+            </xpath>
+           
+            <xpath expr="//field[@name='weight']" position="replace">
+                <!-- <label for="weight"/> -->
+                 <div class="o_row">
+                    <field name="weight"/> kg
+                 </div>
+            </xpath>
+            
+            <xpath expr="//field[@name='volume']" position="replace">
+                <!-- <label for="volume"/> -->
+                 <div class="o_row">
+                    <field name="volume"/>cubic meter
+                 </div>
+            </xpath>
+            
+        </field>    
+    </record> 
+</odoo>

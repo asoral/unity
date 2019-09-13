@@ -1,0 +1,17 @@
+<odoo>
+
+    <record id="view_current_stock_picking_inherit33_form" model="ir.ui.view">
+        <field name="name">stock.picking.inherit.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="current_stock.view_picking_form12547"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='move_lines']/tree/field[@name='product_uom_qty']" position="after">
+                <field name="type" attrs="{'readonly':[('is_eng_product','=',False)]}"/>
+                <field name="length" attrs="{'readonly':[('is_eng_product','=',False)]}"/>
+                <field name="weight" attrs="{'readonly':[('is_eng_product','=',False)]}"/>
+                <field name="is_eng_product" invisible="1"/>
+            </xpath>
+        </field>
+     </record>
+
+</odoo>
