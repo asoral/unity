@@ -12,7 +12,7 @@
     """,
     "author": "Dexciss Technology Pvt Ltd.(@Ragini)",
    
-    "depends": ['product','stock','purchase'],
+    "depends": ['product','stock','purchase','sale_order_picking_operation_line_unity'],
     "data": [
             "views/metal_weight_cal.xml",
             "views/purchase_order_view.xml",
