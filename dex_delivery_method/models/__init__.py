@@ -1,0 +1,6 @@
+import delivery_carrier
+import sale_order_inh
+import stock_picking_inh
+import purchase_order_inherit
+import account_invoice_inherit
+import additional_charges

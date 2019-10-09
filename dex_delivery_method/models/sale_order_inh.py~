@@ -1,0 +1,178 @@
+
+from odoo import api, fields, models,_
+from odoo.exceptions import UserError, ValidationError
+
+class SaleOrder(models.Model):
+    _inherit = "sale.order"
+    
+    add_charges_ids = fields.One2many('additional.charges','additonal_id', string="Additional Charges",copy=True)
+    
+    @api.model
+    def create(self, vals):
+        print"******* save button code***************"
+        result = super(SaleOrder, self).create(vals)
+#         result.compute_method()
+        result.save_button()
+        return result
+     
+    @api.multi
+    def delivery_set_limit(self):
+        for order in self:
+            for line in order.add_charges_ids:
+#                 for c_id in line.carrier_id:
+                    carrier = line.carrier_id
+                    if line:
+                        if order.state not in ('draft', 'sent','sale','done'):
+                            raise UserError(_('The order state have to be draft to add delivery lines.'))
+        
+                        if carrier.delivery_type not in ['fixed','base_on_rule','base_on_percent']:
+#                             print '^^^^^^^^^^^^^^^^^^^^^^1 first'
+                            # Shipping providers are used when delivery_type is other than 'fixed' or 'base_on_rule'
+                            price_unit = order.carrier_id.get_shipping_price_from_so(order)[0]
+#                             print "_________1st ____________",price_unit
+
+                        else:
+                            # Classic grid-based carriers
+                            carrier = line.carrier_id.verify_carrier(order.partner_shipping_id)
+                            print "----------- carrier line -----------------",carrier
+                            if not carrier:
+                                raise UserError(_('No carrier matching.'))
+                            
+                            price_unit = carrier.get_price_available(order)
+#                             print  "_______________2nd___________",price_unit
+                           
+                            if order.company_id.currency_id.id != order.pricelist_id.currency_id.id:
+                                price_unit = order.company_id.currency_id.with_context(date=order.date_order).compute(price_unit, order.pricelist_id.currency_id)
+#                                 print"__________3rd________",price_unit
+                        
+                        final_price = price_unit * (1.0 + (float(self.carrier_id.margin) / 100.0))
+#                         print"____________________________",final_price
+                        
+                        for o_line in order.order_line:
+#                             print "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR",line.carrier_id.product_id,o_line.product_id
+                            if line.carrier_id.product_id == o_line.product_id:
+                                self.delivery_unset(o_line)
+                        
+                        order._create_delivery_line(carrier, final_price,line)
+                       
+                    else:
+                        raise UserError(_('No carrier set for this order.'))
+
+        return True
+    
+#   Method to delete existing record from sale order line,while set record of delivery charges 
+    @api.multi
+    def delivery_unset(self,o_line):
+        o_line.unlink()
+    
+    
+    
+#   Method to set record in sale order line
+    def _create_delivery_line(self, carrier, price_unit,line):
+#         print"___ enter sale order creation____________"
+        
+        SaleOrderLine = self.env['sale.order.line']
+        # Apply fiscal position
+        taxes = carrier.product_id.taxes_id.filtered(lambda t: t.company_id.id == self.company_id.id)
+        taxes_ids = taxes.ids
+        if self.partner_id and self.fiscal_position_id:
+            taxes_ids = self.fiscal_position_id.map_tax(taxes, carrier.product_id, self.partner_id).ids
+        # Create the sale order line
+        values = {
+            'order_id': self.id,
+            'name': carrier.name,
+            'product_uom_qty': 1,
+            'product_uom': carrier.product_id.uom_id.id,
+            'product_id': carrier.product_id.id,
+            'price_unit':line.total,
+            'tax_id': [(6, 0, taxes_ids)],
+            'is_delivery': True,
+        }
+        if self.order_line:
+            values['sequence'] = self.order_line[-1].sequence + 1
+        sol = SaleOrderLine.sudo().create(values)
+        return sol
+    
+    @api.multi
+    def save_button(self):
+        print"******* compute method********"
+        for order in self:
+            for c_id in order.add_charges_ids:
+                if c_id.carrier_id.delivery_type == 'base_on_rule':
+                    c_id.delivery_price = c_id.carrier_id.with_context(order_id=order.id).price
+                    print "===============",c_id.delivery_price
+
+    @api.multi
+    def compute_method(self):
+        for order in self:
+            order.compute_delivery_price()
+    @api.multi
+    def compute_delivery_price(self):
+        print"***********compute_delivery_price***********"
+        for order in self:
+            for c_id in order.add_charges_ids:
+                if order.state != 'draft':
+                    continue
+                if c_id.carrier_id.delivery_type == 'fixed' or c_id.carrier_id.delivery_type == 'base_on_rule':
+                    c_id.delivery_price = c_id.carrier_id.with_context(order_id=order.id).price
+                    print"_______rule base____________",c_id.delivery_price       
+                
+                if c_id.carrier_id.delivery_type == 'base_on_percent':
+                    print ""      
+                    c_id.percent=c_id.carrier_id.percent
+                    print"_______percent base____________",c_id.percent
+
+
+class Additional_charges(models.Model):
+    _name  = "additional.charges" 
+    
+    @api.depends('percent','delivery_price','total')
+    def get_total(self):
+        for res in self:
+            if res.carrier_id and res.carrier_id.delivery_type == 'fixed':
+                res.total=res.delivery_price
+            
+            if res.carrier_id and res.carrier_id.delivery_type == 'base_on_rule':
+                res.total=res.delivery_price
+            
+            
+            if res.carrier_id and res.carrier_id.delivery_type == 'base_on_percent':
+#                 print "**********per*********",res.percent
+                l=res.percent
+                amt = res.additonal_id.amount_untaxed
+                f_amount = amt*(l/100)
+#                 print "+++++++++++++ final amount",f_amount
+                res.total=f_amount
+    
+    
+    
+    
+    additonal_id = fields.Many2one('sale.order')   
+    picking_id = fields.Many2one('stock.picking')   
+    delivery_price = fields.Float(string='Fixed Delivery Price')
+    carrier_id = fields.Many2one("delivery.carrier", string="Delivery Type")
+    percent = fields.Float(string="Percent(%)")
+    total = fields.Float(string="Total" , readonly=True, compute='get_total')
+    delivery_type = fields.Selection(related="carrier_id.delivery_type", string="Related", store =  True)
+
+
+
+    @api.onchange('carrier_id')
+    def onchange_carrier_id(self):
+#         print"***********compute_delivery_price***********"
+        for c_id in self:
+                if c_id.carrier_id.delivery_type == 'fixed':  
+                    c_id.delivery_price = c_id.carrier_id.fixed_price
+                    print"_______fixed____________",c_id.delivery_price       
+                
+                if c_id.carrier_id.delivery_type == 'base_on_percent':
+                    print "" 
+                    l=c_id.percent
+                    amt = c_id.additonal_id.amount_untaxed
+                    f_amount = amt*(l/100)
+    #                 print "+++++++++++++ final amount",f_amount
+                    c_id.total=f_amount     
+                    c_id.percent=c_id.carrier_id.percent
+                    print"_______percent base____________",c_id.percent
+            
+

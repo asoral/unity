@@ -1,0 +1,30 @@
+<odoo>
+    <!-- ============ inherit delivery carrier form view========-->
+
+    <record id="_inherit_delivery_carrier" model="ir.ui.view">
+        <field name="name">delivery.carrier.form.inherit</field>
+        <field name="model">delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/div/group/group/field[@name='delivery_type']" position="replace">
+                <field name="delivery_type" widget="radio"/>
+                <field name="based_on" widget="radio"/>
+            </xpath>
+            
+            <xpath expr="//form/sheet/notebook/page[1]"  position="inside">
+                <group attrs="{'invisible': [('delivery_type', '!=', 'base_on_percent')]}">
+                    <field name="percent" class="oe_inline" />
+                </group>
+            </xpath>
+            
+            <xpath expr="//field[@name='integration_level']" position="attributes"> 
+                <attribute name="invisible">True</attribute> 
+            </xpath>
+            <!-- ========= replace attrs of page=========== -->
+            <xpath expr="//page[1]"  position="attributes">
+                <attribute name="attrs">{'invisible': [('delivery_type', 'not in', ['fixed', 'base_on_rule','base_on_percent'])]}</attribute>
+            </xpath>  
+       
+        </field>
+    </record>
+</odoo>    

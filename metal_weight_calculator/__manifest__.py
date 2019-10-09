@@ -1,6 +1,6 @@
 {
     'name' : 'Metal Weight Calculator',
-    'version' : '10.4 updated 13/Sep',
+    'version' : '10.5 updated 13/Sep',
     'summary': '',
     'sequence': 30,
     'description': """
