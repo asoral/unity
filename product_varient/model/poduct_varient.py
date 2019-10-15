@@ -82,11 +82,13 @@ class ProductTemplate(models.Model):
         if self.product_variant_ids:
 #             print("mymethoddddddddddddd")
             self.product_variant_ids.default_code = self.default_code
+            
 
     @api.depends('product_variant_ids', 'product_variant_ids.default_code')
     def _compute_default_code(self):
         for variant in self.product_variant_ids:
             self.default_code = variant.default_code
+            self.barcode = variant.barcode
 #             print("???????????????????",self.default_code)
 #         return True
 
@@ -125,7 +127,8 @@ class ProductTemplate(models.Model):
                 new_variant = Product.create({
                     'product_tmpl_id': tmpl_id.id,
                     'attribute_value_ids': [(6, 0, variant_ids.ids)],
-                    'default_code':tmpl_id.default_code
+                    'default_code':tmpl_id.default_code,
+                    'barcode':tmpl_id.barcode
                 })
 #                 print("==================",new_variant)
 
