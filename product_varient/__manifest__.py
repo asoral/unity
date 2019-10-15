@@ -1,6 +1,6 @@
 {
     "name": "Product Varient",
-    "version": "10.0.0.2",
+    "version": "10.0.0.3",
     "description": """Use domain in paython
     """,
     "author": "Dexciss Technology Pvt Ltd. (Sangita)",
