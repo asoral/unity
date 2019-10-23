@@ -33,10 +33,12 @@ class SaleOrderLine(models.Model):
                 attr += attributes.mapped('value_ids')
             return {'domain':{'value_ids':[('id','in',attr.ids)]}}
             
-    @api.onchange('value_ids')
+    @api.onchange('prod_temp_id','value_ids')
     def onchange_value_ids(self):
         for s in self:
-            for line in s.value_ids.product_ids:
+#             print("????????????????????????????")
+            for line in s.prod_temp_id.product_variant_id:
+#                 print("::::::::::::::::::::::::::::::")
                 s.product_id = line.id
                 
 class ProductAttributeValue(models.Model):
