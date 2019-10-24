@@ -40,6 +40,9 @@ class SaleOrderLine(models.Model):
             for line in s.prod_temp_id.product_variant_id:
 #                 print("::::::::::::::::::::::::::::::")
                 s.product_id = line.id
+            if s.value_ids:
+                for value in s.value_ids.product_ids:
+                    s.product_id = value.id
                 
 class ProductAttributeValue(models.Model):
     _inherit = "product.attribute.value"
